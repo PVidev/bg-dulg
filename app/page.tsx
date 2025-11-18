@@ -425,7 +425,8 @@ export default function Home() {
   } : null
 
   // Подготвяме данните за графиката на населението
-  const populationChartData = history.length > 0 && history.some(h => h.population) ? {
+  const hasPopulationData = history.length > 0 && history.some(h => h.population)
+  const populationChartData = hasPopulationData ? {
     labels: history.map(h => h.year),
     datasets: [
       {
@@ -667,7 +668,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                {history.some(h => h.population) && (
+                {hasPopulationData && populationChartData && (
                   <div className={styles.chartCard}>
                     <div className={styles.chartHeader}>
                       <h3 className={styles.chartTitle}>Развитие на населението през годините</h3>

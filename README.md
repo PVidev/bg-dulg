@@ -102,3 +102,89 @@ npm run dev -- -p 3001
 - И населението е 6,837,000 души
 - Тогава всеки гражданин трябва да върне: 45,000,000,000 / 6,837,000 ≈ 6,581 USD
 
+## Deployment на Vercel
+
+Проектът е готов за deployment на Vercel. Следвай тези стъпки:
+
+### 1. Инсталирай Vercel CLI (опционално)
+
+```bash
+npm i -g vercel
+```
+
+### 2. Deployment чрез Vercel Dashboard
+
+1. Отиди на [vercel.com](https://vercel.com) и влез в акаунта си
+2. Кликни на "New Project"
+3. Свържи GitHub/GitLab/Bitbucket репозитория или качи проекта директно
+4. Vercel автоматично ще разпознае Next.js проекта
+5. Кликни "Deploy"
+
+### 3. Deployment чрез Vercel CLI
+
+```bash
+# Влез в акаунта си
+vercel login
+
+# Deploy в production
+vercel --prod
+```
+
+### 4. Важни бележки за Vercel
+
+- ✅ **Файловете в `data/` папката** се включват автоматично в build
+- ✅ **API routes** (`/api/debt`, `/api/debt/history`) работят като serverless функции
+- ✅ **Максимално време за изпълнение**: 30 секунди (конфигурирано в `vercel.json`)
+- ✅ **Автоматично HTTPS** и CDN оптимизация
+- ✅ **Автоматично обновяване** при push в main branch (ако е свързан с Git)
+
+### 5. Environment Variables (ако са нужни)
+
+Ако в бъдеще се добавят API ключове или други секретни данни, можеш да ги добавиш в:
+- Vercel Dashboard → Project Settings → Environment Variables
+
+### 6. Build и Deploy настройки
+
+Проектът използва стандартните Next.js build команди:
+- **Build Command**: `npm run build` (автоматично)
+- **Output Directory**: `.next` (автоматично)
+- **Install Command**: `npm install` (автоматично)
+
+Всички настройки са конфигурирани в `vercel.json`.
+
+### 7. Проверка след deployment
+
+След успешен deployment:
+1. Проверявай дали API routes работят: `https://your-project.vercel.app/api/debt`
+2. Проверявай дали данните се зареждат правилно
+3. Проверявай конзолата за грешки в Vercel Dashboard → Functions
+
+### 8. Обновяване на данните
+
+За да обновиш месечните данни:
+1. Добави нови PDF/Excel файлове в `data/` папката
+2. Изпълни `scripts/extract-data.js` локално (ако е нужно)
+3. Обнови `data/monthly-debt-data.json`
+4. Push промените в Git
+5. Vercel автоматично ще направи нов deployment
+
+---
+
+## Структура на проекта
+
+```
+BGN/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   │   └── debt/         # Debt API endpoints
+│   ├── page.tsx          # Главна страница
+│   └── globals.css       # Глобални стилове
+├── data/                  # Данни от БНБ
+│   ├── *.pdf            # PDF прессъобщения
+│   ├── *.xlsx           # Excel файлове
+│   └── *.json           # Структурирани данни
+├── scripts/              # Скриптове за обработка на данни
+├── vercel.json           # Vercel конфигурация
+└── package.json         # Зависимости
+```
+

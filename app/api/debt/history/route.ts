@@ -11,6 +11,14 @@ interface WorldBankDataPoint {
   [key: string]: any
 }
 
+interface MonthlyBNBData {
+  year: string
+  month: string
+  debt: number
+  debtUSD?: number
+  note?: string
+}
+
 async function fetchWorldBankData(indicator: string, country: string = 'BGR'): Promise<WorldBankDataPoint[]> {
   const currentYear = new Date().getFullYear()
   const endYear = currentYear + 1
@@ -69,12 +77,12 @@ function generateHistoricalData(baseValue: number, baseYear: number, basePopulat
 }
 
 // Зареждаме месечните данни от БНБ
-function loadMonthlyBNBData() {
+function loadMonthlyBNBData(): MonthlyBNBData[] {
   try {
     const dataPath = path.join(process.cwd(), 'data', 'monthly-debt-data.json')
     if (fs.existsSync(dataPath)) {
       const fileContent = fs.readFileSync(dataPath, 'utf8')
-      const monthlyData = JSON.parse(fileContent)
+      const monthlyData = JSON.parse(fileContent) as { data?: MonthlyBNBData[] }
       return monthlyData.data || []
     }
   } catch (error) {
@@ -120,7 +128,7 @@ export async function GET() {
     }
     
     // Добавяме месечните данни от БНБ (те са по-актуални)
-    monthlyBNBData.forEach(monthly => {
+    monthlyBNBData.forEach((monthly: MonthlyBNBData) => {
       const yearMonth = `${monthly.year}-${monthly.month}`
       const debtUSD = monthly.debtUSD || (monthly.debt * 1.08) // Конвертираме в USD
       const population = 6800000 // Приблизително население
